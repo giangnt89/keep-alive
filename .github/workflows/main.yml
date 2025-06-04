@@ -1,0 +1,13 @@
+name: Keep Alive
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # Mỗi ngày lúc 22h (giờ Việt Nam là UTC+7)
+  workflow_dispatch:      # Cho phép chạy thủ công
+
+jobs:
+  keep-active:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping action
+        run: echo "✅ Still alive at $(date)"
