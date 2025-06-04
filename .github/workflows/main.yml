@@ -2,7 +2,8 @@ name: Daily AI Note
 
 on:
   schedule:
-    - cron: '31 15 * * *'  # 22h giờ Việt Nam
+    # - cron: '31 15 * * *'  # 22h giờ Việt Nam
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
