@@ -1,13 +1,25 @@
-name: Keep Alive
+name: Daily Commit
 
 on:
   schedule:
-    - cron: '0 7 * * *'  # Mỗi ngày lúc 22h (giờ Việt Nam là UTC+7)
-  workflow_dispatch:      # Cho phép chạy thủ công
+    - cron: '0 15 * * *'  # Mỗi ngày lúc 22h giờ VN (UTC+7)
+  workflow_dispatch:
 
 jobs:
-  keep-active:
+  commit:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping action
-        run: echo "✅ Still alive at $(date)"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update timestamp
+        run: |
+          echo "Last updated: $(date)" > update.txt
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add update.txt
+          git commit -m "🤖 Daily update on $(date)" || echo "Nothing to commit"
+          git push
