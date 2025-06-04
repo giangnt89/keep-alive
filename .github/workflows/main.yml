@@ -2,7 +2,7 @@ name: Daily Log Commit
 
 on:
   schedule:
-    - cron: '0 15 * * *'  # 22h giờ Việt Nam
+    - cron: '10 13 * * *'  # 22h giờ Việt Nam
   workflow_dispatch:
 
 jobs:
