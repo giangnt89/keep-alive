@@ -2,15 +2,17 @@ name: Daily Log Commit
 
 on:
   schedule:
-    - cron: '0 10 * * *'  # 22h giờ Việt Nam (UTC+7)
+    - cron: '0 15 * * *'  # 22h giờ Việt Nam
   workflow_dispatch:
 
 jobs:
   daily-log:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout with write permission
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create daily log
         run: |
@@ -24,4 +26,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add logs/
           git commit -m "📝 Daily log for $(date '+%Y-%m-%d')" || echo "Không có gì để commit"
+          git pull --rebase
           git push
