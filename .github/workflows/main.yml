@@ -1,0 +1,141 @@
+name: Daily AI Note
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 22h giờ Việt Nam
+  workflow_dispatch:
+
+jobs:
+  generate-note:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate AI-like daily note
+        run: |
+          mkdir -p logs
+          NOW=$(date '+%Y-%m-%d')
+          FILE="logs/$NOW-note.md"
+
+          NOTES=(
+            "Hôm nay tôi học về Git và cách sử dụng branching hiệu quả."
+            "Tôi đã cấu hình GitHub Actions để tự động hóa quy trình commit hàng ngày."
+            "Tôi đọc tài liệu Laravel và hiểu rõ hơn về Eloquent ORM."
+            "Tôi tìm hiểu cách hoạt động của Docker và container."
+            "Tôi tạo một REST API bằng ExpressJS đơn giản."
+            "Tôi học cách viết cron job trên Linux để chạy script định kỳ."
+            "Tôi cấu hình nginx để deploy ứng dụng Laravel."
+            "Tôi thử tạo biểu đồ bằng Chart.js trong dự án frontend."
+            "Tôi tìm hiểu mô hình MVC và cách ứng dụng vào thực tế."
+            "Tôi học về promise và async/await trong JavaScript."
+            "Tôi thử viết unit test đầu tiên với Jest."
+            "Tôi đã backup cơ sở dữ liệu MySQL bằng `mysqldump`."
+            "Tôi học cách thao tác file JSON trong Python."
+            "Tôi cài đặt Redis để làm cache cho ứng dụng Laravel."
+            "Tôi sử dụng SQLite để test nhanh backend API."
+            "Tôi học cách tối ưu SEO cho trang web tĩnh."
+            "Tôi đọc tài liệu về CSRF và bảo mật web."
+            "Tôi thử dùng Git rebase để gọn commit lịch sử."
+            "Tôi học cách viết shell script để quản lý nhiều repo Git."
+            "Tôi dùng Postman test các endpoint của REST API."
+            "Tôi thực hành responsive web design với Tailwind CSS."
+            "Tôi dùng Tinker để test lệnh trong Laravel nhanh hơn."
+            "Tôi thử triển khai project lên Vercel."
+            "Tôi đọc tài liệu về JWT và cách xác thực người dùng."
+            "Tôi nghiên cứu cách hoạt động của OAuth2."
+            "Tôi viết middleware mới trong dự án Express."
+            "Tôi cấu hình ESLint và Prettier cho dự án JS."
+            "Tôi học cách build image Docker custom."
+            "Tôi cài đặt PostgreSQL bằng Docker Compose."
+            "Tôi test kết nối Redis từ PHP."
+            "Tôi học kiến trúc microservice và ví dụ thực tế."
+            "Tôi viết thử CLI tool bằng Node.js."
+            "Tôi học cách debug PHP bằng Xdebug."
+            "Tôi dùng `jq` để xử lý JSON từ dòng lệnh."
+            "Tôi viết các test case với PHPUnit."
+            "Tôi triển khai CI/CD pipeline với GitHub Actions."
+            "Tôi tạo một blog tĩnh bằng Hugo."
+            "Tôi config Webpack để bundle frontend assets."
+            "Tôi thử gọi API bằng `fetch` trong JS thuần."
+            "Tôi học cách viết component tái sử dụng bằng VueJS."
+            "Tôi phân biệt rõ state và props trong React."
+            "Tôi thực hành lazy loading ảnh trong HTML."
+            "Tôi học về các chỉ số hiệu suất web (LCP, CLS, FID)."
+            "Tôi học cách dùng `screen` để giữ tiến trình chạy trên VPS."
+            "Tôi cài và chạy MongoDB local bằng Docker."
+            "Tôi thực hiện clean install Laravel 11."
+            "Tôi config tailwind.config.js để tùy chỉnh theme."
+            "Tôi tạo trang landing đơn giản chỉ với HTML/CSS."
+            "Tôi dùng `rsync` để đồng bộ thư mục dự án."
+            "Tôi cài đặt Supervisor để giữ cron Laravel chạy mãi mãi."
+            "Tôi học sự khác biệt giữa PUT và PATCH."
+            "Tôi dùng `curl` để test webhook nhanh chóng."
+            "Tôi học cách tổ chức folder trong dự án lớn."
+            "Tôi test upload file S3 bằng Laravel Storage."
+            "Tôi viết class helper trong Laravel để dùng lại logic."
+            "Tôi hiểu được kiến trúc MVC là xương sống của Laravel."
+            "Tôi học cách dùng blade component để tái sử dụng HTML."
+            "Tôi hiểu rõ cache route trong Laravel giúp tối ưu."
+            "Tôi config queue Laravel dùng Redis rất dễ."
+            "Tôi dùng tail -f để theo dõi log server realtime."
+            "Tôi debug curl request bằng --trace-ascii."
+            "Tôi tạo command Artisan custom để chạy job riêng."
+            "Tôi học cách dùng GitHub CLI tiện hơn nhiều."
+            "Tôi biết cách rollback migration nếu có lỗi."
+            "Tôi tạo thử một package Laravel nội bộ."
+            "Tôi viết script bash để tự clone nhiều repo Git."
+            "Tôi config đa môi trường `.env` trong project."
+            "Tôi học dùng AlpineJS để thêm tương tác frontend."
+            "Tôi viết tài liệu README rõ ràng hơn hôm nay."
+            "Tôi viết script auto commit hàng ngày bằng bash."
+            "Tôi dùng try/catch để xử lý lỗi tốt hơn trong code."
+            "Tôi học thêm về Service Provider trong Laravel."
+            "Tôi thử dùng InertiaJS để build SPA với Laravel."
+            "Tôi hiểu quy trình deploy CI/CD là thế nào."
+            "Tôi học cách reset branch về commit cũ."
+            "Tôi thử tạo middleware auth cho API route."
+            "Tôi chạy task nền Laravel bằng queue worker."
+            "Tôi dùng `watch` trong bash để theo dõi tiến trình."
+            "Tôi viết custom validation rule trong Laravel."
+            "Tôi tìm hiểu các method HTTP như HEAD, OPTIONS."
+            "Tôi viết cron tự động gửi email mỗi sáng."
+            "Tôi config domain VPS với Cloudflare."
+            "Tôi kết nối Laravel đến Cloud SQL của Google."
+            "Tôi tạo git alias để gõ lệnh nhanh hơn."
+            "Tôi học cách versioning API REST."
+            "Tôi viết logic cập nhật giỏ hàng trong session."
+            "Tôi học cấu trúc clean architecture trong backend."
+            "Tôi tạo shell tool dùng `dialog` cho UI terminal."
+            "Tôi học cách sử dụng `.gitignore` đúng cách."
+            "Tôi config webhook GitHub về Discord."
+            "Tôi viết bash script tự động build và push Docker."
+            "Tôi dùng Github API để lấy repo stars."
+            "Tôi học cách đọc code Laravel framework."
+            "Tôi viết plugin nhỏ cho VS Code."
+            "Tôi config Firebase Hosting cho frontend."
+            "Tôi viết bash command tự tạo file README."
+            "Tôi tự deploy Laravel lên Heroku thử nghiệm."
+            "Tôi đọc RFC chuẩn JSON và REST để hiểu sâu hơn."
+            "Tôi dùng `awk` và `sed` xử lý file log."
+            "Tôi config tự động backup DB mỗi đêm."
+          )
+
+          RANDOM_INDEX=$((RANDOM % ${#NOTES[@]}))
+          NOTE=${NOTES[$RANDOM_INDEX]}
+
+          echo "# Dev Note - $NOW" > "$FILE"
+          echo "" >> "$FILE"
+          echo "$NOTE" >> "$FILE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add logs/
+          git commit -m "🧠 Daily AI Note for $(date '+%Y-%m-%d')" || echo "Không có gì để commit"
+          git pull --rebase
+          git push
