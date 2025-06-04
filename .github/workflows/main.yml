@@ -1,0 +1,50 @@
+name: Daily Log Commit
+
+on:
+  schedule:
+    - cron: '30 13 * * *'  # 22h giờ Việt Nam (UTC+7)
+  workflow_dispatch:
+
+jobs:
+  daily-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with write permission
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create daily log
+        run: |
+          mkdir -p logs
+          NOW=$(date '+%Y-%m-%d')
+          FILE="logs/${NOW}-log.txt"
+
+          echo "⏳ Đang tạo log giả lập tại $FILE"
+
+          ACTIONS=("created" "updated" "deleted")
+          LINES=$((RANDOM % 901 + 100))  # Ngẫu nhiên từ 100–1000 dòng
+
+          for i in $(seq 1 $LINES); do
+            # Tạo giờ phút giây ngẫu nhiên trong ngày
+            TIME=$(date -d "$((RANDOM % 86400)) seconds" +%H:%M:%S)
+
+            # Tạo user ID ngẫu nhiên từ 1–100000 với định dạng user_000123
+            USER_RAW_ID=$(( (RANDOM * RANDOM) % 100000 + 1 ))
+            printf -v USER_ID "user_%06d" "$USER_RAW_ID"
+
+            # Chọn hành động ngẫu nhiên
+            ACTION=${ACTIONS[$RANDOM % ${#ACTIONS[@]}]}
+
+            # Ghi log
+            echo "$NOW $TIME $USER_ID đã $ACTION resv thành công" >> "$FILE"
+          done
+
+      - name: Commit and push
+        run: |
+          git config user.name "giang89"
+          git config user.email "truonggiang92qn@gmail.com"
+          git add logs/
+          git commit -m "📝 Daily log for $(date '+%Y-%m-%d')" || echo "Không có gì để commit"
+          git pull --rebase
+          git push
